@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <!-- Mobil uchun masshtab qulflangan viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>E-ombor </title>
+    <!-- Tailwind CSS (Dizayn uchun) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome (Ikonkalar uchun) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #1e293b; }
+        .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+        .tab-inactive { color: #64748b; font-weight: 500; }
+        .tab-inactive:hover { color: #334155; }
+        .glass-panel { background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border-radius: 1rem; }
+        
+        /* Mobil menyu uchun gorizontal scrollni yashirish */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- HEADER / Yuqori panel -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2.5 rounded-lg">
+                    <i class="fa-solid fa-warehouse text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800 tracking-tight">E-OMBOR</h1>
+                    <p class="text-xs text-slate-500"></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-lg border border-slate-200">
+                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center">KO</div>
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold text-slate-800">Karimov Oybek</p>
+                    <p class="text-xs text-slate-500">Omborchi</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ASOSIY QISM -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <!-- STATISTIKA BLOKLARI -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- RUXSAT -->
+            <div class="glass-panel p-5 border-l-4 border-emerald-500 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ruxsat</h2>
+                    <p id="stat-ruxsat" class="text-4xl font-extrabold text-emerald-600">0</p>
+                    <p class="text-xs text-slate-500 mt-1"></p>
+                </div>
+                <div class="p-4 bg-emerald-50 text-emerald-500 rounded-full"><i class="fa-solid fa-circle-check text-2xl"></i></div>
+            </div>
+            <!-- NAZORAT -->
+            <div class="glass-panel p-5 border-l-4 border-rose-500 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Nazorat</h2>
+                    <p id="stat-nazorat" class="text-4xl font-extrabold text-rose-600">0</p>
+                    <p class="text-xs text-slate-500 mt-1"></p>
+                </div>
+                <div class="p-4 bg-rose-50 text-rose-500 rounded-full"><i class="fa-solid fa-shield-halved text-2xl"></i></div>
+            </div>
+            <!-- JARAYONDA -->
+            <div class="glass-panel p-5 border-l-4 border-amber-500 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Jarayonda</h2>
+                    <p id="stat-jarayonda" class="text-4xl font-extrabold text-amber-500">0</p>
+                    <p class="text-xs text-slate-500 mt-1"></p>
+                </div>
+                <div class="p-4 bg-amber-50 text-amber-500 rounded-full"><i class="fa-solid fa-hourglass-half text-2xl"></i></div>
+            </div>
+        </section>
+
+        <!-- NAVIGATSIYA TUGMALARI -->
+        <!-- Telefon uchun qulay scroll yashirildi -->
+        <nav class="flex overflow-x-auto no-scrollbar border-b border-slate-200 pb-1">
+            <button onclick="openModule('qabul')" id="tab-qabul" class="tab-active px-5 py-3 whitespace-nowrap text-sm flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-truck-ramp-box"></i> Transport qabul qilish
+            </button>
+            <button onclick="openModule('dalolatnoma')" id="tab-dalolatnoma" class="tab-inactive px-5 py-3 whitespace-nowrap text-sm flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-file-signature"></i> Dalolatnoma tuzish
+            </button>
+            <button onclick="openModule('yuborish')" id="tab-yuborish" class="tab-inactive px-5 py-3 whitespace-nowrap text-sm flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-route"></i> Boshqa manzilga yuborish
+            </button>
+            <button onclick="openModule('barchasi')" id="tab-barchasi" class="tab-inactive px-5 py-3 whitespace-nowrap text-sm flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-list-check"></i> Barcha maqomdagi yuklar
+            </button>
+        </nav>
+
+        <!-- MODUL 1: QABUL QILISH -->
+        <section id="module-qabul" class="space-y-6">
+            <div class="glass-panel p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Yukni tizimda qidirish</h3>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="search-input" placeholder="Avto yoki vagon raqami (Masalan: 01A777AA)" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button onclick="searchTransport()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Izlash
+                    </button>
+                </div>
+            </div>
+
+            <div id="search-result" class="hidden glass-panel p-6 border-2 border-blue-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start border-b border-slate-100 pb-4 mb-4 gap-3">
+                    <div>
+                        <span id="res-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide"></span>
+                        <h4 id="res-number" class="text-2xl font-black text-slate-800 mt-2">---</h4>
+                    </div>
+                    <div class="text-left sm:text-right text-xs text-slate-500">
+                        <p>Kelgan vaqti:</p>
+                        <p id="res-time" class="font-semibold text-slate-700">---</p>
+                    </div>
+                </div>
+
+                <!-- Telefonlar uchun ma'lumotlar bitta ustunda chiqishi sozlandi (grid-cols-1) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs text-slate-500 mb-1">Plomba raqami</p>
+                        <p id="res-seal" class="font-bold text-slate-800">---</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs text-slate-500 mb-1">Og'irligi (Brutto/Netto)</p>
+                        <p id="res-weight" class="font-bold text-slate-800">---</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs text-slate-500 mb-1">TIF TN kodi</p>
+                        <p id="res-tiftn" class="font-bold text-blue-600">---</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <p class="text-xs text-slate-500 mb-1">Partiyalar soni</p>
+                        <p id="res-batch" class="font-bold text-slate-800">---</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-6 flex gap-3 items-start">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-xl mt-1"></i>
+                    <p class="text-sm text-amber-800"><strong>DIQQAT:</strong> Bu bosqichda yukni tushirish qat'iyan man etiladi! Tasdiqlaganingizdan so'ng bojxona elektron ruxsati kutiladi.</p>
+                </div>
+
+                <div class="flex justify-end w-full sm:w-auto">
+                    <button id="btn-confirm-arrival" onclick="confirmArrival()" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg shadow-amber-500/30">
+                        Kelganligini Tasdiqlash
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODUL 2: DALOLATNOMA -->
+        <section id="module-dalolatnoma" class="hidden space-y-6">
+            <div class="glass-panel p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-2 border-b border-slate-100 pb-3">Elektron Dalolatnoma Tuzish</h3>
+                
+                <div class="space-y-6 mt-4">
+                    <!-- Transport tanlash -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Ruxsat berilgan transportni tanlang:</label>
+                        <select id="select-ruxsat" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+
+                    <!-- 1-Qadam: GPS -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-3">
+                            <span class="font-bold text-slate-800">1. Joylashuvni aniqlash</span>
+                            <button onclick="verifyGPS()" class="w-full sm:w-auto bg-blue-100 hover:bg-blue-200 text-blue-700 font-semibold px-4 py-2 rounded-lg text-sm transition">
+                                <i class="fa-solid fa-location-crosshairs mr-1"></i> GPS ni yoqish
+                            </button>
+                        </div>
+                        <p id="gps-status" class="text-sm text-slate-500"></p>
+                    </div>
+
+                    <!-- 2-Qadam: Rasm -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                        <span class="font-bold text-slate-800 block mb-3">2. Majburiy 3 ta fotosurat yuklash</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div onclick="takePhoto(1)" id="photo-1" class="border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50 p-6 rounded-lg text-center cursor-pointer transition">
+                                <i class="fa-solid fa-camera text-3xl text-slate-400 mb-2 block mx-auto"></i>
+                                <span class="text-sm font-medium text-slate-600">1. Old qismi</span>
+                            </div>
+                            <div onclick="takePhoto(2)" id="photo-2" class="border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50 p-6 rounded-lg text-center cursor-pointer transition">
+                                <i class="fa-solid fa-camera text-3xl text-slate-400 mb-2 block mx-auto"></i>
+                                <span class="text-sm font-medium text-slate-600">2. Yon qismi</span>
+                            </div>
+                            <div onclick="takePhoto(3)" id="photo-3" class="border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50 p-6 rounded-lg text-center cursor-pointer transition">
+                                <i class="fa-solid fa-camera text-3xl text-slate-400 mb-2 block mx-auto"></i>
+                                <span class="text-sm font-medium text-slate-600">3. Plomba qismi</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3-Qadam: Plomba -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-slate-50">
+                        <span class="font-bold text-slate-800 block mb-3">3. Plomba holatini belgilang:</span>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer bg-white px-4 py-3 border border-slate-200 rounded-lg hover:border-emerald-500 transition w-full sm:w-auto">
+                                <input type="radio" name="seal" value="uzulmagan" checked onchange="checkForm()" class="w-4 h-4 text-emerald-600">
+                                <span class="text-sm font-bold text-emerald-600"><i class="fa-solid fa-lock mr-1"></i> Uzulmagan</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer bg-white px-4 py-3 border border-slate-200 rounded-lg hover:border-rose-500 transition w-full sm:w-auto">
+                                <input type="radio" name="seal" value="uzilgan" onchange="checkForm()" class="w-4 h-4 text-rose-600">
+                                <span class="text-sm font-bold text-rose-600"><i class="fa-solid fa-lock-open mr-1"></i> Uzilgan</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="btn-submit-act" onclick="submitAct()" disabled class="w-full bg-slate-300 text-slate-500 font-bold py-4 rounded-xl transition-colors cursor-not-allowed text-base sm:text-lg px-2">
+                        <i class="fa-solid fa-check-double mr-2"></i> Dalolatnoma Tuzish va Yakunlash
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODUL 3: YUBORISH -->
+        <section id="module-yuborish" class="hidden space-y-6">
+            <div class="glass-panel p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Boshqa manzilga yuborish (Tranzit)</h3>
+                <p class="text-sm text-slate-500 mb-6">Agar yuk ombor sig'imi yoki boshqa sabablar bilan bu yerda tushirilmasa, boshqa postga yo'naltiring.</p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Transportni tanlang:</label>
+                        <select id="select-yuborish" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Yangi manzil (Post kodi/nomi):</label>
+                        <input type="text" id="input-manzil" placeholder="" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <button onclick="redirectTransport()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors mt-2">
+                        Yo'nalishni tasdiqlash
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODUL 4: BARCHA YUKLAR -->
+        <section id="module-barchasi" class="hidden space-y-6">
+            <div class="glass-panel p-6 overflow-hidden">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Omborga kelgan barcha yuklar tarixi</h3>
+                <div class="overflow-x-auto no-scrollbar" style="-webkit-overflow-scrolling: touch;">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider">
+                                <th class="p-4 rounded-tl-lg font-semibold">Turi</th>
+                                <th class="p-4 font-semibold">Davlat Raqami</th>
+                                <th class="p-4 font-semibold">Plomba</th>
+                                <th class="p-4 font-semibold">TIF TN</th>
+                                <th class="p-4 font-semibold">Maqom</th>
+                                <th class="p-4 rounded-tr-lg font-semibold">Sana / Vaqt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-100 text-sm">
+                            <!-- Ma'lumotlar JS orqali kiritiladi -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ASOSIY JAVASCRIPT KODI -->
+    <script>
+        // --- 1. MA'LUMOTLAR BAZASI (Simulyatsiya) ---
+        let transports = [
+            { id: "T1", type: "Avto", number: "01A777AA", seal: "UZ-112233", weight: "24,500 / 22,000", tiftn: "8703239000", batch: 12, status: "NAZORAT", time: "2026-08-18 09:15" },
+            { id: "T2", type: "Avto", number: "10B555CC", seal: "UZ-445566", weight: "15,200 / 14,000", tiftn: "8471300000", batch: 4, status: "RUXSAT", time: "2026-08-18 10:30" },
+            { id: "T3", type: "Vagon", number: "VAG-9900", seal: "UZ-778899", weight: "60,000 / 58,000", tiftn: "7208100000", batch: 2, status: "JARAYONDA", time: "2026-08-18 11:45" },
+            { id: "T4", type: "Avto", number: "40C123DD", seal: "UZ-551122", weight: "18,000 / 17,500", tiftn: "3901101000", batch: 8, status: "QABUL QILINDI", time: "2026-08-17 15:20" }
+        ];
+
+        // --- 2. GLOBAL O'ZGARUVCHILAR ---
+        let currentSearchId = null;
+        let actForm = { gps: false, p1: false, p2: false, p3: false };
+
+        // --- 3. DASTLABKI YUKLASH ---
+        window.onload = () => {
+            updateDashboard();
+        };
+
+        // --- 4. ASOSIY FUNKSIYALAR ---
+
+        // Tablarni almashtirish
+        function openModule(moduleName) {
+            // Barcha tablarni inaktiv qilish
+            ['qabul', 'dalolatnoma', 'yuborish', 'barchasi'].forEach(m => {
+                document.getElementById(`tab-${m}`).className = "tab-inactive px-5 py-3 whitespace-nowrap text-sm flex items-center gap-2 transition-all";
+                document.getElementById(`module-${m}`).classList.add('hidden');
+            });
+            // Tanlangan tabni aktiv qilish
+            document.getElementById(`tab-${moduleName}`).className = "tab-active px-5 py-3 whitespace-nowrap text-sm flex items-center gap-2 transition-all";
+            document.getElementById(`module-${moduleName}`).classList.remove('hidden');
+
+            // Agar uchinchi yoki to'rtinchi tab bosilsa, jadvallarni yangilash
+            if(moduleName === 'dalolatnoma' || moduleName === 'yuborish') populateSelects();
+            if(moduleName === 'barchasi') renderTable();
+        }
+
+        // Dashboard raqamlarini yangilash va select/table elementlarini to'ldirish
+        function updateDashboard() {
+            document.getElementById('stat-ruxsat').innerText = transports.filter(t => t.status === 'RUXSAT').length;
+            document.getElementById('stat-nazorat').innerText = transports.filter(t => t.status === 'NAZORAT').length;
+            document.getElementById('stat-jarayonda').innerText = transports.filter(t => t.status === 'JARAYONDA').length;
+            populateSelects();
+            renderTable();
+        }
+
+        // Qidirish (Avto bo'yicha)
+        function searchTransport() {
+            const query = document.getElementById('search-input').value.trim().toUpperCase();
+            if(!query) return alert("Iltimos, raqamni kiriting!");
+
+            const result = transports.find(t => t.number.toUpperCase().includes(query));
+            if(result) {
+                currentSearchId = result.id;
+                document.getElementById('search-result').classList.remove('hidden');
+                document.getElementById('res-number').innerText = result.number;
+                document.getElementById('res-seal').innerText = result.seal;
+                document.getElementById('res-weight').innerText = result.weight;
+                document.getElementById('res-tiftn').innerText = result.tiftn;
+                document.getElementById('res-batch').innerText = result.batch + " ta";
+                document.getElementById('res-time').innerText = result.time;
+
+                const badge = document.getElementById('res-badge');
+                badge.innerText = result.status;
+                if(result.status === 'RUXSAT') badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-700";
+                else if(result.status === 'NAZORAT') badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-700";
+                else if(result.status === 'JARAYONDA') badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-700";
+                else badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-slate-200 text-slate-700";
+
+                const btn = document.getElementById('btn-confirm-arrival');
+                if(result.status === 'NAZORAT') {
+                    btn.disabled = false;
+                    btn.className = "w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg shadow-amber-500/30";
+                    btn.innerText = "Kelganligini Tasdiqlash";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "w-full sm:w-auto bg-slate-300 text-slate-500 font-bold py-3 px-8 rounded-lg cursor-not-allowed";
+                    btn.innerText = "Tasdiqlangan / Ruxsat kutilmoqda";
+                }
+            } else {
+                alert("Bunday raqamli transport tizimda topilmadi.");
+                document.getElementById('search-result').classList.add('hidden');
+            }
+        }
+
+        // Qabul qilish (Jarayondaga o'tkazish)
+        function confirmArrival() {
+            let item = transports.find(t => t.id === currentSearchId);
+            if(item) {
+                item.status = "JARAYONDA";
+                updateDashboard();
+                searchTransport(); // UI ni yangilash
+                alert("Muvaffaqiyatli! Transport 'Jarayonda' maqomiga o'tkazildi. Endi bojxona xodimlari ruxsati kutiladi.");
+            }
+        }
+
+        // Select ro'yxatlarini to'ldirish
+        function populateSelects() {
+            const selRuxsat = document.getElementById('select-ruxsat');
+            const selYuborish = document.getElementById('select-yuborish');
+            
+            selRuxsat.innerHTML = '<option value="">-- Ruxsat etilgan transportni tanlang --</option>';
+            selYuborish.innerHTML = '<option value="">-- Transportni tanlang --</option>';
+
+            transports.forEach(t => {
+                if(t.status === 'RUXSAT') {
+                    selRuxsat.innerHTML += `<option value="${t.id}">${t.number} (Plomba: ${t.seal})</option>`;
+                }
+                if(t.status !== 'QABUL QILINDI' && t.status !== 'YUBORILDI') {
+                    selYuborish.innerHTML += `<option value="${t.id}">${t.number} - [Hozirgi holat: ${t.status}]</option>`;
+                }
+            });
+        }
+
+        // --- DALOLATNOMA JARAYONLARI ---
+        function verifyGPS() {
+            document.getElementById('gps-status').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aniqlanmoqda...';
+            setTimeout(() => {
+                actForm.gps = true;
+                document.getElementById('gps-status').innerHTML = '<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> Tasdiqlandi: 41.3111° N, 69.2797° E (Bojxona Ombori)</span>';
+                checkForm();
+            }, 800);
+        }
+
+        function takePhoto(num) {
+            actForm[`p${num}`] = true;
+            const el = document.getElementById(`photo-${num}`);
+            el.className = "border-2 border-emerald-500 bg-emerald-50 p-6 rounded-lg text-center cursor-pointer transition";
+            el.innerHTML = `<i class="fa-solid fa-check-circle text-3xl text-emerald-500 mb-2 block mx-auto"></i><span class="text-sm font-bold text-emerald-700">Yuklandi</span>`;
+            checkForm();
+        }
+
+        function checkForm() {
+            const tr = document.getElementById('select-ruxsat').value;
+            const btn = document.getElementById('btn-submit-act');
+            
+            if(tr && actForm.gps && actForm.p1 && actForm.p2 && actForm.p3) {
+                btn.disabled = false;
+                btn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition-colors text-base sm:text-lg shadow-lg shadow-emerald-500/30 px-2";
+            } else {
+                btn.disabled = true;
+                btn.className = "w-full bg-slate-300 text-slate-500 font-bold py-4 rounded-xl cursor-not-allowed text-base sm:text-lg px-2";
+            }
+        }
+
+        document.getElementById('select-ruxsat').addEventListener('change', checkForm);
+
+        function submitAct() {
+            const trId = document.getElementById('select-ruxsat').value;
+            const sealStatus = document.querySelector('input[name="seal"]:checked').value;
+            let item = transports.find(t => t.id === trId);
+            
+            if(item) {
+                if(sealStatus === 'uzilgan') {
+                    alert("DIQQAT! Plomba uzilgan. Bojxona xizmatiga favqulodda xabar yuborildi. Komissiyasiz qabul qilinmaydi!");
+                    item.status = "MUAMMO";
+                } else {
+                    item.status = "QABUL QILINDI";
+                    alert("Elektron dalolatnoma yuridik kuchga kirdi va saqlandi!");
+                }
+                
+                // Formani tozalash
+                actForm = { gps: false, p1: false, p2: false, p3: false };
+                document.getElementById('gps-status').innerText = "Koordinatalar hozircha olinmadi.";
+                [1,2,3].forEach(num => {
+                    document.getElementById(`photo-${num}`).className = "border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50 p-6 rounded-lg text-center cursor-pointer transition";
+                    document.getElementById(`photo-${num}`).innerHTML = `<i class="fa-solid fa-camera text-3xl text-slate-400 mb-2 block mx-auto"></i><span class="text-sm font-medium text-slate-600">${num}-Rasm</span>`;
+                });
+                document.getElementById('select-ruxsat').value = "";
+                checkForm();
+                updateDashboard();
+            }
+        }
+
+        // --- YUBORISH JARAYONI ---
+        function redirectTransport() {
+            const trId = document.getElementById('select-yuborish').value;
+            const manzil = document.getElementById('input-manzil').value.trim();
+            
+            if(!trId) return alert("Transportni tanlang!");
+            if(!manzil) return alert("Yangi manzilni kiriting!");
+
+            let item = transports.find(t => t.id === trId);
+            if(item) {
+                item.status = "YUBORILDI";
+                item.time += ` (${manzil} ga)`;
+                alert(`Transport muvaffaqiyatli ${manzil} ga tranzit qilindi!`);
+                document.getElementById('input-manzil').value = "";
+                updateDashboard();
+            }
+        }
+
+        // --- BARCHA YUKLAR JADVALI ---
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = "";
+            transports.forEach(t => {
+                let badgeClass = "bg-slate-100 text-slate-700";
+                if(t.status === 'RUXSAT') badgeClass = "bg-emerald-100 text-emerald-700";
+                if(t.status === 'NAZORAT') badgeClass = "bg-rose-100 text-rose-700";
+                if(t.status === 'JARAYONDA') badgeClass = "bg-amber-100 text-amber-700";
+                if(t.status === 'QABUL QILINDI') badgeClass = "bg-blue-100 text-blue-700";
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 font-medium text-slate-800">${t.type}</td>
+                        <td class="p-4 font-bold text-slate-800">${t.number}</td>
+                        <td class="p-4 text-slate-500 font-mono">${t.seal}</td>
+                        <td class="p-4 text-blue-600 font-mono font-medium">${t.tiftn}</td>
+                        <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeClass}">${t.status}</span></td>
+                        <td class="p-4 text-slate-500 text-xs">${t.time}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
